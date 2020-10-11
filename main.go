@@ -14,7 +14,7 @@ const version = "0.9.0"
 var (
 	cli    = kingpin.New("peepex", "A handy tool to peek at the contents of an Excel workbook.")
 	files  = cli.Arg("files", "Excel files").ExistingFiles()
-	sheets = cli.Flag("sheet", "Comma-separated sheet names.  (ex)Sheet1,Sheet2").Short('s').Required().String()
+	sheets = cli.Flag("sheet", "Comma-separated sheet names.  (ex)Sheet1,Sheet2 or 'all'").Short('s').Required().String()
 	cells  = cli.Flag("cell", "Comma-separated cell coordinate.  (ex)A1,B2").Short('c').Required().String()
 )
 

@@ -16,11 +16,19 @@ func Peep(filename, sheets, cells string) ([]*PeepData, error) {
 	}
 
 	peepDatas := []*PeepData{}
-	for _, sheet := range strings.Split(sheets, ",") {
-		sheet = strings.TrimSpace(sheet)
-		p := NewPeepData(filename, sheet)
-		GetSheetCellValue(p, f, sheet, cells)
-		peepDatas = append(peepDatas, p)
+	if strings.ToLower(sheets) == "all" {
+		for _, sheet := range f.GetSheetList() {
+			p := NewPeepData(filename, sheet)
+			GetSheetCellValue(p, f, sheet, cells)
+			peepDatas = append(peepDatas, p)
+		}
+	} else {
+		for _, sheet := range strings.Split(sheets, ",") {
+			sheet = strings.TrimSpace(sheet)
+			p := NewPeepData(filename, sheet)
+			GetSheetCellValue(p, f, sheet, cells)
+			peepDatas = append(peepDatas, p)
+		}
 	}
 	return peepDatas, nil
 }
