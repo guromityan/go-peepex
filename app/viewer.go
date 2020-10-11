@@ -6,18 +6,26 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-func TableView(p []*PeepData) {
-	// header := []string{"Name", "Sheet", "A1", "B2"}
-	// data := [][]string{
-	// 	{"tes1.xlsx", "Sheet1", "compute", "fukuoka"},
-	// 	{"tes2.xlsx", "Sheet1", "computer", "fukuoka"},
-	// 	{"tes3.xlsx", "Sheet1", "compute", "tokyo"},
-	// }
+// TableView 取得したデータを表形式で表示
+func TableView(p [][]*PeepData, fileNum int) {
+	header := p[0][0].GetTableHeader()
+	dataFlat := [][]string{}
+	for _, peepData := range p {
+		for _, d := range peepData {
+			dataFlat = append(dataFlat, d.GetTableSrc())
+		}
+	}
 
-	header := p[0].GetTableHeader()
 	data := [][]string{}
-	for _, d := range p {
-		data = append(data, d.GetTableSrc())
+	k := 0
+	for i := 0; i < (len(dataFlat) / fileNum); i++ {
+		k = i
+		for j := 0; j < fileNum; j++ {
+			if j != 0 {
+				k += len(dataFlat) / fileNum
+			}
+			data = append(data, dataFlat[k])
+		}
 	}
 
 	table := tablewriter.NewWriter(os.Stdout)
