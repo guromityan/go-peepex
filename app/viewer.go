@@ -6,7 +6,6 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-// TableView 取得したデータを表形式で表示
 func TableView(p [][]*PeepData, fileNum int) {
 	header := p[0][0].GetTableHeader()
 	dataFlat := [][]string{}

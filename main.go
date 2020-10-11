@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/alecthomas/kingpin"
 	"github.com/guromityan/go-peepex/app"
@@ -35,6 +36,11 @@ func main() {
 	if *cells == "" {
 		fmt.Println("Please specify any cells.")
 		return
+	}
+
+	if *sheets == "all" {
+		sheetList := app.GetAllSheetList(*files)
+		*sheets = strings.Join(sheetList, ",")
 	}
 
 	peepDataWithFiles := [][]*app.PeepData{}

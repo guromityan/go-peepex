@@ -16,25 +16,15 @@ func Peep(filename, sheets, cells string) ([]*PeepData, error) {
 	}
 
 	peepDatas := []*PeepData{}
-	if strings.ToLower(sheets) == "all" {
-		for _, sheet := range f.GetSheetList() {
-			p := NewPeepData(filename, sheet)
-			GetSheetCellValue(p, f, sheet, cells)
-			peepDatas = append(peepDatas, p)
-		}
-	} else {
-		for _, sheet := range strings.Split(sheets, ",") {
-			sheet = strings.TrimSpace(sheet)
-			p := NewPeepData(filename, sheet)
-			GetSheetCellValue(p, f, sheet, cells)
-			peepDatas = append(peepDatas, p)
-		}
+	for _, sheet := range strings.Split(sheets, ",") {
+		sheet = strings.TrimSpace(sheet)
+		p := NewPeepData(filename, sheet)
+		GetSheetCellValue(p, f, sheet, cells)
+		peepDatas = append(peepDatas, p)
 	}
 	return peepDatas, nil
 }
 
-// GetSheetCellValue 指定したシート、セルの値を取得
-// シートが存在しない場合はシート名を "None: sheet" とし、セルの数だけ空データを生成
 func GetSheetCellValue(p *PeepData, f *excelize.File, sheet, cells string) {
 	cellList := []string{}
 	for _, cell := range strings.Split(cells, ",") {
@@ -60,4 +50,44 @@ func GetSheetCellValue(p *PeepData, f *excelize.File, sheet, cells string) {
 		v := NewPeepValue(cell, cellVal)
 		p.AddPeepValue(v)
 	}
+}
+
+func GetAllSheetList(filenames []string) []string {
+	sheetList := []string{}
+
+	for _, filename := range filenames {
+		f, err := excelize.OpenFile(filename)
+		if err != nil {
+			continue
+		}
+		sheetList = MergeSlices(sheetList, f.GetSheetList())
+	}
+
+	return sheetList
+}
+
+func MergeSlices(s1, s2 []string) []string {
+	merged := []string{}
+	a := []string{}
+	b := []string{}
+
+	if len(s1) >= len(s2) {
+		a = s1
+		b = s2
+	} else {
+		a = s2
+		b = s1
+	}
+
+	merged = a
+	for i, e := range a {
+		if !(i < len(b)) {
+			continue
+		}
+		if e != b[i] {
+			merged = append(merged[:i+1], merged[i:]...)
+			merged[i+1] = b[i]
+		}
+	}
+	return merged
 }
